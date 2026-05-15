@@ -5793,6 +5793,45 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.16109313, y: 0.16109222, z: 0.021353606}
   m_Center: {x: 0.000000461936, y: 0, z: 0.00000010430813}
+--- !u!54 &1279303064
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279303056}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1279303065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279303056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 174ae8eaf95af3c44ab8b612f9489fd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1326264893
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5876,7 +5915,13 @@ PrefabInstance:
       addedObject: {fileID: 1279303062}
     - targetCorrespondingSourceObject: {fileID: 1895619019945609263, guid: 6eb54dac65df6294fa008a1a42a4893b, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1279303065}
+    - targetCorrespondingSourceObject: {fileID: 1895619019945609263, guid: 6eb54dac65df6294fa008a1a42a4893b, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1279303061}
+    - targetCorrespondingSourceObject: {fileID: 1895619019945609263, guid: 6eb54dac65df6294fa008a1a42a4893b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1279303064}
     - targetCorrespondingSourceObject: {fileID: 3100406363732653175, guid: 6eb54dac65df6294fa008a1a42a4893b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1904127577}
