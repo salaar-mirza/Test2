@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Practice_Workstation : MonoBehaviour ,IPracticeGrabbable
 {
     // Cache the MeshRenderer component for better performance.
     private MeshRenderer _meshRenderer;
+    
+    public Practice_MetalRod _rodMaterial;
+
 
     private void Awake()
     {
@@ -23,6 +27,24 @@ public class Practice_Workstation : MonoBehaviour ,IPracticeGrabbable
         {
             Debug.LogError("DANGER: Cannot use workstation without wearing PPE first!");
             _meshRenderer.material.color = Color.red;
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.GetComponent<Practice_MetalRod>())
+        {
+            _rodMaterial = other.gameObject.GetComponent<Practice_MetalRod>();
+            if (Practice_Manager.instance.currentState == Practice_Manager.ProcedureState.ReadyToWork)
+            {
+                _rodMaterial.isHeated = true;
+                Debug.Log("the Road is Hot now");
+            }
+            else
+            {
+                _rodMaterial.isHeated = false;
+                Debug.LogError("Were Gloves");
+            }
         }
     }
 
