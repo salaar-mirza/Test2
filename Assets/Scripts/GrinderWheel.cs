@@ -40,13 +40,18 @@ public class GrinderWheel : MonoBehaviour,IIntractable,IHovarabel
 
     public void OnGrab(Transform interactor)
     {
-        if (SimulationManager.instance.isPowerOn && !SimulationManager.instance.isinspected)
+        // First, check if the machine has been inspected.
+        if (!SimulationManager.instance.isinspected)
         {
+            // If not, this action is the inspection.
             SimulationManager.instance.isinspected = true;
             SimulationManager.instance.UpdateScore(20,"Machine Inspected");
         }
-
-        SimulationManager.instance.isPowerOn = !SimulationManager.instance.isPowerOn;
+        else
+        {
+            // If it has already been inspected, this action toggles the power.
+            SimulationManager.instance.isPowerOn = !SimulationManager.instance.isPowerOn;
+        }
     }
 
     public void OnHoverEnter()
