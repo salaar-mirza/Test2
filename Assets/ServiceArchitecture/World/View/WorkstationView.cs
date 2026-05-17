@@ -6,9 +6,10 @@ namespace ServiceArchitecture.World.View
 {
     public class WorkstationView : MonoBehaviour
     {
-        private void OnCollisionEnter(Collision other)
+        // Switched to OnTriggerEnter to detect kinematic rigidbodies
+        private void OnTriggerEnter(Collider other)
         {
-            Debug.Log($"[WorkstationView] Collision detected with {other.gameObject.name}");
+            Debug.Log($"[WorkstationView] Trigger detected with {other.gameObject.name}");
             EventBus<WorkstationCollisionEvent>.Publish(new WorkstationCollisionEvent { CollidingObject = other.gameObject });
         }
     }
