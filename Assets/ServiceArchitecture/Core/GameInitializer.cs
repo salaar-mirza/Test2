@@ -6,6 +6,7 @@ using ServiceArchitecture.Simulation;
 using ServiceArchitecture.Scoring;
 using ServiceArchitecture.UI;
 using ServiceArchitecture.World.Data;
+using ServiceArchitecture.Player;
 using ServiceArchitecture.World;
 using ServiceArchitecture.World.View;
 using TMPro;
@@ -19,6 +20,7 @@ namespace ServiceArchitecture.Core
     public class GameInitializer : MonoBehaviour
     {
         [Header("Scene Dependencies")]
+        public GameObject playerPrefab;
         public WorkstationView workstationPrefab;
         public PhysicsPropView physicsPropPrefab;
         public PhysicsPropConfig defaultPropConfig;
@@ -29,15 +31,17 @@ namespace ServiceArchitecture.Core
 
         private void Awake()
         {
-            // --- Dependencies ---
-            // In a real project, these might come from a config file.
-            Camera mainCamera = Camera.main;
-            float interactionDistance = 10f;
+            // --- Player Creation ---
+            var playerInstance = Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+            var playerCharacterController = playerInstance.GetComponent<CharacterController>();
+            var playerCamera = playerInstance.GetComponentInChildren<Camera>();
+
 
             
             // --- Service Creation ---
             CreateAndRegister(new InputService());
-            CreateAndRegister(new InteractionService(mainCamera, interactionDistance));
+            CreateAndRegister(new PlayerMovementService(playerCharacterController, 7.5f, 100f, -9.81f));
+            CreateAndRegister(new InteractionService(playerCamera, 10f));
             CreateAndRegister(new SOP_Service());
             CreateAndRegister(new ScoringService());
             CreateAndRegister(new UIService(statusText));
