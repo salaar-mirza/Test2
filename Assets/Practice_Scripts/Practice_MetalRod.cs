@@ -52,14 +52,19 @@ public class Practice_MetalRod : MonoBehaviour, IPracticeGrabbable
         }
  
         // All heating logic now lives on the rod itself.
-        if (Practice_Manager.instance.currentState == Practice_Manager.ProcedureState.ReadyToWork)
+        if (Practice_Manager.instance.currentState != Practice_Manager.ProcedureState.ReadyToWork)
         {
-            this.isHeated = true;
-            Debug.Log("<color=orange>The Rod is now HOT!</color>");
+            Debug.LogError("Cannot heat rod! Safety procedures not followed (PPE not equipped).");
+        }
+        else if (!Practice_Manager.instance.isWorkstationOn)
+        {
+            // This is the new safety check for the workstation's power.
+            Debug.LogWarning("Workstation is not powered on. Cannot heat rod.");
         }
         else
         {
-            Debug.LogError("Cannot heat rod! Safety procedures not followed (PPE not equipped).");
+            this.isHeated = true;
+            Debug.Log("<color=orange>The Rod is now HOT!</color>");
         }
     }
     
@@ -78,6 +83,9 @@ public class Practice_MetalRod : MonoBehaviour, IPracticeGrabbable
             Debug.Log("<color=cyan>Sizzzzzle! Rod has been cooled.</color>");
             Practice_Manager.instance.AdvanceState(Practice_Manager.ProcedureState.TaskComplete);
             Debug.Log("<b><color=yellow>TASK COMPLETE! Well done.</color></b>");
+
+            // Destroy the rod as the final step.
+            Destroy(gameObject);
         }
     }
     

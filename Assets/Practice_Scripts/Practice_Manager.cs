@@ -14,6 +14,9 @@ public class Practice_Manager : MonoBehaviour
     
     public ProcedureState currentState { get; private set; }
     
+    // Add a new state to track the workstation's power status
+    public bool isWorkstationOn = false;
+    
     private void OnEnable()
     {
         // Subscribe to the event when the manager is enabled.

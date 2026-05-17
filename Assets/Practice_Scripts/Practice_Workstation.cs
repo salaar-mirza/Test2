@@ -18,16 +18,27 @@ public class Practice_Workstation : MonoBehaviour ,IPracticeGrabbable
 
     public void OnGrab(Transform grabPoint)
     {
-        // Check the current state from the manager.
-        if (Practice_Manager.instance.currentState == Practice_Manager.ProcedureState.ReadyToWork)
-        {
-            Debug.Log("<color=green>SUCCESS: Workstation activated. You are following the procedure!</color>");
-            _meshRenderer.material.color = Color.green;
-        }
-        else // This 'else' block will catch AwaitingPPE and any other future states.
+        // Safety Gate: You can't operate the workstation without PPE.
+        if (Practice_Manager.instance.currentState != Practice_Manager.ProcedureState.ReadyToWork)
         {
             Debug.LogError("DANGER: Cannot use workstation without wearing PPE first!");
             _meshRenderer.material.color = Color.red;
+            return;
+        }
+
+        // If PPE is equipped, this action toggles the power state in the manager.
+        Practice_Manager.instance.isWorkstationOn = !Practice_Manager.instance.isWorkstationOn;
+
+        // Update visuals and log feedback based on the new power state.
+        if (Practice_Manager.instance.isWorkstationOn)
+        {
+            Debug.Log("<color=green>Workstation POWER ON.</color>");
+            _meshRenderer.material.color = Color.green;
+        }
+        else
+        {
+            Debug.Log("Workstation POWER OFF.");
+            _meshRenderer.material.color = Color.white; // Use white to show it's ready but off
         }
     }
 
