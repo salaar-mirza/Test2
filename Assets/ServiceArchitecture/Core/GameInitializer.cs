@@ -12,12 +12,30 @@ public class GameInitializer : MonoBehaviour
 
     private void Awake()
     {
+        // --- Dependencies ---
+        // In a real project, these might come from a config file.
+        Camera mainCamera = Camera.main;
+        float interactionDistance = 10f;
+
+        
         // --- Service Creation ---
-        // In the future, we will create all our services here.
-        // Example: CreateAndRegister(new SOP_Service());
+        CreateAndRegister(new InputService());
+        CreateAndRegister(new InteractionService(mainCamera, interactionDistance));
 
         Debug.Log("Game Initializer: All services created and registered.");
     }
+    
+     
+    private void CreateAndRegister<T>(T service) where T : IService
+    {
+        _services.Add(service);
+        GameService.Register(service);
+        if (service is ITickable tickable)
+        {
+            _tickables.Add(tickable);
+        }
+    }
+    
 
     private void Update()
     {
