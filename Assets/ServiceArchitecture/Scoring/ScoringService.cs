@@ -17,6 +17,7 @@ namespace ServiceArchitecture.Scoring
         {
             EventBus<PPE_EquippedEvent>.Subscribe(OnPPEEquipped);
             EventBus<PropHeatedEvent>.Subscribe(OnPropHeated);
+            EventBus<PropCooledEvent>.Subscribe(OnPropCooled);
         }
 
         private void OnPPEEquipped(PPE_EquippedEvent payload)
@@ -32,6 +33,12 @@ namespace ServiceArchitecture.Scoring
             EventBus<ScoreUpdatedEvent>.Publish(new ScoreUpdatedEvent { NewTotalScore = _totalScore });
             Debug.Log($"<color=yellow>ScoringService: Prop Heated! New Score: {_totalScore}</color>");
         }
-        
+         
+        private void OnPropCooled(PropCooledEvent payload)
+        {
+            _totalScore += 20;
+            EventBus<ScoreUpdatedEvent>.Publish(new ScoreUpdatedEvent { NewTotalScore = _totalScore });
+            Debug.Log($"<color=yellow>ScoringService: Prop Cooled! New Score: {_totalScore}</color>");
+        }
     }
 }

@@ -15,6 +15,11 @@ namespace ServiceArchitecture.Core
             OnEvent += handler;
         }
 
+        public static void Unsubscribe(Action<T> handler)
+        {
+            OnEvent -= handler;
+        }
+        
         public static void Publish(T payload)
         {
             OnEvent?.Invoke(payload);

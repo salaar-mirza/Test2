@@ -707,9 +707,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2222a7bc469432f810b6c7bcad8c3a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coolingBucketPrefab: {fileID: 2662535294112713451, guid: 45f8d648f8ac2ed48ad19e61b0a3a7b8, type: 3}
   playerPrefab: {fileID: 3194586059573494433, guid: f33617d4849e7814ab11a9dd169f62be, type: 3}
   workstationPrefab: {fileID: 2759307870932513536, guid: 93abfd6d7448a974781b6687dd556760, type: 3}
-  physicsPropPrefab: {fileID: 5929297590714533407, guid: caeeb704420c5814fb1792945ded87ea, type: 3}
+  physicsPropPrefab: {fileID: 8884544144754249895, guid: cac7fcbd518da674cb60b4caf2e616f2, type: 3}
   defaultPropConfig: {fileID: 11400000, guid: 07dd3f62ce4392943be4a16f104c92f6, type: 2}
   statusText: {fileID: 469314931}
 --- !u!4 &1871898586

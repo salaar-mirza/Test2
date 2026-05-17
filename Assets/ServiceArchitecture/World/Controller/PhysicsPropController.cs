@@ -20,8 +20,15 @@ namespace ServiceArchitecture.World.Controller
             _view = view;
             _view.Rb.mass = config.mass;
             _view.Rb.linearDamping = config.drag;
-            
+            // Subscribe to all relevant world events
             EventBus<WorkstationCollisionEvent>.Subscribe(OnWorkstationCollision);
+            EventBus<CoolingBucketTriggerEvent>.Subscribe(OnCoolingBucketCollision);
+        }
+        public void Dispose()
+        {
+            // Unsubscribe from all events to prevent memory leaks
+            EventBus<WorkstationCollisionEvent>.Unsubscribe(OnWorkstationCollision);
+            EventBus<CoolingBucketTriggerEvent>.Unsubscribe(OnCoolingBucketCollision);
         }
 
         public void OnInteract(Transform interactor)
@@ -59,6 +66,22 @@ namespace ServiceArchitecture.World.Controller
             {
                 Debug.LogWarning("Cannot heat prop: PPE not equipped!");
             }
+        }
+        
+         
+        private void OnCoolingBucketCollision(CoolingBucketTriggerEvent payload)
+        {
+            // Ignore if it's not this object or if it's not heated
+            if (payload.CollidingObject != _view.gameObject || !_isHeated) return;
+ 
+            _isHeated = false;
+            Debug.Log("<color=cyan>Prop has been cooled!</color>");
+ 
+            // Announce that the prop has been cooled
+            EventBus<PropCooledEvent>.Publish(new PropCooledEvent());
+ 
+            Dispose(); // Clean up event subscriptions
+            Object.Destroy(_view.gameObject); // Destroy the view object
         }
         
     }

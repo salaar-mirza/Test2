@@ -1,6 +1,7 @@
 using UnityEngine;
 using ServiceArchitecture.Core;
 using ServiceArchitecture.Simulation.Events;
+using ServiceArchitecture.World.Events;
 
 namespace ServiceArchitecture.Simulation
 {
@@ -18,6 +19,7 @@ namespace ServiceArchitecture.Simulation
             Debug.Log($"SOP_Service Initialized. Current State: {CurrentState}");
 
             EventBus<PPE_EquippedEvent>.Subscribe(OnPPEEquipped);
+            EventBus<PropCooledEvent>.Subscribe(OnPropCooled);
         }
 
         private void OnPPEEquipped(PPE_EquippedEvent payload)
@@ -30,5 +32,18 @@ namespace ServiceArchitecture.Simulation
                 Debug.Log($"<color=cyan>PPE Equipped! New State: {CurrentState}</color>");
             }
         }
+        
+         
+        private void OnPropCooled(PropCooledEvent payload)
+        {
+            if (CurrentState == ProcedureState.ReadyToWork)
+            {
+                CurrentState = ProcedureState.TaskComplete;
+                EventBus<ProcedureStateChangedEvent>.Publish(new ProcedureStateChangedEvent { NewState = CurrentState });
+                Debug.Log($"<color=cyan>TASK COMPLETE! Final State: {CurrentState}</color>");
+            }
+        }
+        
+        
     }
 }

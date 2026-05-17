@@ -20,6 +20,7 @@ namespace ServiceArchitecture.Core
     public class GameInitializer : MonoBehaviour
     {
         [Header("Scene Dependencies")]
+        public CoolingBucketView coolingBucketPrefab;
         public GameObject playerPrefab;
         public WorkstationView workstationPrefab;
         public PhysicsPropView physicsPropPrefab;
@@ -51,6 +52,7 @@ namespace ServiceArchitecture.Core
               
             // --- World Creation ---
             // In a real project, this would be driven by a level loading service.
+            Object.Instantiate(coolingBucketPrefab, new Vector3(-3, 0.5f, 3), Quaternion.identity);
             Object.Instantiate(workstationPrefab, new Vector3(3, 0.5f, 3), Quaternion.identity);
             worldCreator.CreatePhysicsProp(defaultPropConfig, physicsPropPrefab, new Vector3(0, 1, 3));
         
