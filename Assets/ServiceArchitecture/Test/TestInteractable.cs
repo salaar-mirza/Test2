@@ -1,13 +1,14 @@
 using UnityEngine;
+using ServiceArchitecture.Interaction;
 
-public class TestInteractable : MonoBehaviour, IInteractable
+namespace ServiceArchitecture.Test
 {
-
-    public void OnInteract(Transform interactor)
+    public class TestInteractable : MonoBehaviour, IInteractable
     {
-        Debug.Log($"I, {gameObject.name}, was interacted with!");
-        GetComponent<MeshRenderer>().material.color = Color.cyan;
+        public void OnInteract(Transform interactor)
+        {
+            Debug.Log($"I, {gameObject.name}, was interacted with!");
+            GetComponent<MeshRenderer>().material.color = Color.cyan;
+        }
     }
-
-
 }

@@ -1,16 +1,22 @@
 using UnityEngine;
+using ServiceArchitecture.Core;
+using ServiceArchitecture.Input.Events;
 
-/// <summary>
-/// Listens for raw player input and publishes abstract game events.
-/// It does not know what the actions will do.
-/// </summary>
-public class InputService : IService, ITickable
+namespace ServiceArchitecture.Input
 {
-    public void OnTick()
+    /// <summary>
+    /// Listens for raw player input and publishes abstract game events.
+    /// It does not know what the actions will do.
+    /// </summary>
+    public class InputService : IService, ITickable
     {
-        if (Input.GetMouseButtonDown(0))
+        public void OnTick()
         {
-            EventBus<PrimaryActionStartedEvent>.Publish(new PrimaryActionStartedEvent());
+            // Fully qualify UnityEngine.Input to resolve namespace ambiguity.
+            if (UnityEngine.Input.GetMouseButtonDown(0))
+            {
+                EventBus<PrimaryActionStartedEvent>.Publish(new PrimaryActionStartedEvent());
+            }
         }
     }
 }
