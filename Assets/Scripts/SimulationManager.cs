@@ -17,7 +17,12 @@ public class SimulationManager : MonoBehaviour
     [Header("Scoring")]
     
     public int totalScore = 0;
-    private bool _techniqueScoreAwarded = false;
+    private bool _gogglesScored = false;
+    private bool _glovesScored = false;
+    private bool _inspectionScored = false;
+    private bool _powerOnScored = false;
+    private bool _heatScored = false;
+    private bool _coolScored = false;
     
     [Header("UI Refaeance")]
     public TextMeshProUGUI hudText;
@@ -40,12 +45,60 @@ public class SimulationManager : MonoBehaviour
         Debug.Log($"Score Update: + {points} ({reason}) | Total: {totalScore}");
     }
 
-    public void AwardTechniqueScore()
+    public void ScoreGoggles()
     {
-        if (!_techniqueScoreAwarded)
+        if (!_gogglesScored)
         {
-            UpdateScore(10, "Safe Grinding Technique");
-            _techniqueScoreAwarded = true;
+            hasGoggles = true;
+            UpdateScore(10, "Equipped Goggles");
+            _gogglesScored = true;
+        }
+    }
+    
+    public void ScoreGloves()
+    {
+        if (!_glovesScored)
+        {
+            hasGloves = true;
+            UpdateScore(10, "Equipped Gloves");
+            _glovesScored = true;
+        }
+    }
+    
+    public void ScoreInspection()
+    {
+        if (!_inspectionScored)
+        {
+            isinspected = true;
+            UpdateScore(20, "Machine Inspected");
+            _inspectionScored = true;
+        }
+    }
+    
+    public void ScorePowerOn()
+    {
+        if (isinspected && !_powerOnScored)
+        {
+            UpdateScore(20, "Grinder Powered On");
+            _powerOnScored = true;
+        }
+    }
+    
+    public void ScoreHeat()
+    {
+        if (!_heatScored)
+        {
+            UpdateScore(20, "Workpiece Heated Correctly");
+            _heatScored = true;
+        }
+    }
+    
+    public void ScoreCool()
+    {
+        if (!_coolScored) // Can only score for turning off if it was on.
+        {
+            UpdateScore(20, "Workpiece Cooled");
+            _coolScored = true;
         }
     }
 
@@ -55,19 +108,25 @@ public class SimulationManager : MonoBehaviour
 
         string ppeStatus = (hasGoggles && hasGloves)
             ? "<color=green>EQUIPPED</color>"
-            : "<color=red>MISSING</color>";
+            : $"<color=red>MISSING ({(_gogglesScored ? "Goggles" : "")}{(!_gogglesScored && !_glovesScored ? " & " : "")}{(_glovesScored ? "Gloves" : "")})</color>";
         string inspectStatus = isinspected ? "<color=green>DONE</color>" : "<color=yellow>Pending</color>";
         string engineStatus = isPowerOn
             ? (isFullSpeed ? "<color=green>READY</color>" : "<color=yellow>WARMING UP</color>")
             : "<color=white>OFF</color>";
 
+        string ppeScore = $"1. Wear PPE (Goggles & Gloves): {(_gogglesScored && _glovesScored ? "<color=green>20</color>" : "0")} / 20";
+        string inspectScore = $"2. Inspect Grinder: {(_inspectionScored ? "<color=green>20</color>" : "0")} / 20";
+        string powerOnScore = $"3. Power On Grinder: {(_powerOnScored ? "<color=green>20</color>" : "0")} / 20";
+        string heatScore = $"4. Heat Workpiece: {(_heatScored ? "<color=green>20</color>" : "0")} / 20";
+        string coolScore = $"5. Cool Workpiece: {(_coolScored ? "<color=green>20</color>" : "0")} / 20";
+
         hudText.text = $"<b>WORKSHOP SAFETY SIM</b>\n" +
             $"--------------------------------------\n" +
-            $"PPE:{ppeStatus}\n" +
+            $"PPE Status: {ppeStatus}\n" +
             $"Inspection: {inspectStatus}\n" +
             $"Grinder: {engineStatus}\n" +
-            $"<b>SCORE:{totalScore}</b>";
+            $"--------------------------------------\n" +
+            $"{ppeScore}\n{inspectScore}\n{powerOnScore}\n{heatScore}\n{coolScore}\n" +
+            $"<b>TOTAL SCORE: {totalScore} / 100</b>";
     }
-
-
 }

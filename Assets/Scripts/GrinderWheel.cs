@@ -44,13 +44,16 @@ public class GrinderWheel : MonoBehaviour,IIntractable,IHovarabel
         if (!SimulationManager.instance.isinspected)
         {
             // If not, this action is the inspection.
-            SimulationManager.instance.isinspected = true;
-            SimulationManager.instance.UpdateScore(20,"Machine Inspected");
+            SimulationManager.instance.ScoreInspection();
         }
         else
         {
             // If it has already been inspected, this action toggles the power.
             SimulationManager.instance.isPowerOn = !SimulationManager.instance.isPowerOn;
+
+            // Award points based on the new power state.
+            if (SimulationManager.instance.isPowerOn)
+                SimulationManager.instance.ScorePowerOn();
         }
     }
 
