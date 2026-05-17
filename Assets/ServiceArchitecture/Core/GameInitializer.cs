@@ -5,6 +5,9 @@ using ServiceArchitecture.Interaction;
 using ServiceArchitecture.Simulation;
 using ServiceArchitecture.Scoring;
 using ServiceArchitecture.UI;
+using ServiceArchitecture.World.Data;
+using ServiceArchitecture.World;
+using ServiceArchitecture.World.View;
 using TMPro;
 
 namespace ServiceArchitecture.Core
@@ -16,6 +19,8 @@ namespace ServiceArchitecture.Core
     public class GameInitializer : MonoBehaviour
     {
         [Header("Scene Dependencies")]
+        public PhysicsPropView physicsPropPrefab;
+        public PhysicsPropConfig defaultPropConfig;
         public TextMeshProUGUI statusText;
 
         private readonly List<IService> _services = new List<IService>();
@@ -35,12 +40,17 @@ namespace ServiceArchitecture.Core
             CreateAndRegister(new SOP_Service());
             CreateAndRegister(new ScoringService());
             CreateAndRegister(new UIService(statusText));
+            var worldCreator = CreateAndRegister(new WorldCreationService());
 
             Debug.Log("Game Initializer: All services created and registered.");
+              
+            // --- World Creation ---
+            worldCreator.CreatePhysicsProp(defaultPropConfig, physicsPropPrefab, new Vector3(0, 1, 3));
+        
         }
         
          
-        private void CreateAndRegister<T>(T service) where T : IService
+        private T CreateAndRegister<T>(T service) where T : IService
         {
             _services.Add(service);
             GameService.Register(service);
@@ -48,6 +58,7 @@ namespace ServiceArchitecture.Core
             {
                 _tickables.Add(tickable);
             }
+            return service;
         }
         
 
