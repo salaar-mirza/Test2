@@ -3,6 +3,9 @@ using UnityEngine;
 using ServiceArchitecture.Input;
 using ServiceArchitecture.Interaction;
 using ServiceArchitecture.Simulation;
+using ServiceArchitecture.Scoring;
+using ServiceArchitecture.UI;
+using TMPro;
 
 namespace ServiceArchitecture.Core
 {
@@ -12,6 +15,9 @@ namespace ServiceArchitecture.Core
     /// </summary>
     public class GameInitializer : MonoBehaviour
     {
+        [Header("Scene Dependencies")]
+        public TextMeshProUGUI statusText;
+
         private readonly List<IService> _services = new List<IService>();
         private readonly List<ITickable> _tickables = new List<ITickable>();
 
@@ -27,7 +33,9 @@ namespace ServiceArchitecture.Core
             CreateAndRegister(new InputService());
             CreateAndRegister(new InteractionService(mainCamera, interactionDistance));
             CreateAndRegister(new SOP_Service());
-            
+            CreateAndRegister(new ScoringService());
+            CreateAndRegister(new UIService(statusText));
+
             Debug.Log("Game Initializer: All services created and registered.");
         }
         
