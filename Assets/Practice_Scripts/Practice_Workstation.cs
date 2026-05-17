@@ -9,6 +9,8 @@ public class Practice_Workstation : MonoBehaviour ,IPracticeGrabbable
      
     // This is our public "radio channel". Any script can listen for this event.
     public static event Action<GameObject> OnWorkstationCollided;
+    public static event Action OnWorkstationPoweredOn;
+    public static event Action OnWorkstationPoweredOff;
     
     private void Awake()
     {
@@ -19,7 +21,7 @@ public class Practice_Workstation : MonoBehaviour ,IPracticeGrabbable
     public void OnGrab(Transform grabPoint)
     {
         // Safety Gate: You can't operate the workstation without PPE.
-        if (Practice_Manager.instance.currentState != Practice_Manager.ProcedureState.ReadyToWork)
+        if (Practice_Manager.instance.currentState == Practice_Manager.ProcedureState.AwaitingPPE)
         {
             Debug.LogError("DANGER: Cannot use workstation without wearing PPE first!");
             _meshRenderer.material.color = Color.red;
@@ -34,11 +36,13 @@ public class Practice_Workstation : MonoBehaviour ,IPracticeGrabbable
         {
             Debug.Log("<color=green>Workstation POWER ON.</color>");
             _meshRenderer.material.color = Color.green;
+            OnWorkstationPoweredOn?.Invoke();
         }
         else
         {
             Debug.Log("Workstation POWER OFF.");
             _meshRenderer.material.color = Color.white; // Use white to show it's ready but off
+            OnWorkstationPoweredOff?.Invoke();
         }
     }
 

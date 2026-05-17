@@ -7,6 +7,12 @@ public class Practice_MetalRod : MonoBehaviour, IPracticeGrabbable
     private Rigidbody _rodBody;
     public bool isHeated = false;
 
+    [Tooltip("The local position of the rod when held by the player.")]
+    public Vector3 heldPositionOffset = new Vector3(0f, 0f, 2f);
+
+    public static event Action OnRodHeated;
+    public static event Action OnRodCooled;
+
     private void Awake()
     {
         _rodBody = GetComponent<Rigidbody>();
@@ -33,7 +39,7 @@ public class Practice_MetalRod : MonoBehaviour, IPracticeGrabbable
     {
         _rodBody.isKinematic = true;
         transform.SetParent(pivot);
-        transform.localPosition = new Vector3(0f,0f,2f);
+        transform.localPosition = heldPositionOffset;
     }
     
 
@@ -65,6 +71,7 @@ public class Practice_MetalRod : MonoBehaviour, IPracticeGrabbable
         {
             this.isHeated = true;
             Debug.Log("<color=orange>The Rod is now HOT!</color>");
+            OnRodHeated?.Invoke();
         }
     }
     
@@ -82,6 +89,7 @@ public class Practice_MetalRod : MonoBehaviour, IPracticeGrabbable
             this.isHeated = false;
             Debug.Log("<color=cyan>Sizzzzzle! Rod has been cooled.</color>");
             Practice_Manager.instance.AdvanceState(Practice_Manager.ProcedureState.TaskComplete);
+            OnRodCooled?.Invoke();
             Debug.Log("<b><color=yellow>TASK COMPLETE! Well done.</color></b>");
 
             // Destroy the rod as the final step.
