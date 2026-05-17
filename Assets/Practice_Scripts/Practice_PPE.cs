@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Practice_PPE : MonoBehaviour ,IPracticeGrabbable
 {
     private Rigidbody _rb;
     private Transform _originalParent;
+
+    // This is the "PPE Equipped" radio channel.
+    public static event Action OnPPEEquipped;
 
     void Awake()
     {
@@ -17,8 +21,8 @@ public class Practice_PPE : MonoBehaviour ,IPracticeGrabbable
         
         Debug.Log("PPE Grabbed and Equipped!");
         
-        // Use the public static instance to access the manager
-        Practice_Manager.instance.AdvanceState(Practice_Manager.ProcedureState.ReadyToWork);
+        // Announce that PPE has been equipped.
+        OnPPEEquipped?.Invoke();
         
         // Destroy the game object to simulate equipping it.
         Destroy(gameObject);
