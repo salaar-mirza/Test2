@@ -19,6 +19,7 @@ namespace ServiceArchitecture.Core
     public class GameInitializer : MonoBehaviour
     {
         [Header("Scene Dependencies")]
+        public WorkstationView workstationPrefab;
         public PhysicsPropView physicsPropPrefab;
         public PhysicsPropConfig defaultPropConfig;
         public TextMeshProUGUI statusText;
@@ -45,6 +46,8 @@ namespace ServiceArchitecture.Core
             Debug.Log("Game Initializer: All services created and registered.");
               
             // --- World Creation ---
+            // In a real project, this would be driven by a level loading service.
+            Object.Instantiate(workstationPrefab, new Vector3(3, 0.5f, 3), Quaternion.identity);
             worldCreator.CreatePhysicsProp(defaultPropConfig, physicsPropPrefab, new Vector3(0, 1, 3));
         
         }

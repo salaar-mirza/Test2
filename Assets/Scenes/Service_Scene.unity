@@ -844,6 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2222a7bc469432f810b6c7bcad8c3a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  workstationPrefab: {fileID: 2759307870932513536, guid: 93abfd6d7448a974781b6687dd556760, type: 3}
   physicsPropPrefab: {fileID: 5929297590714533407, guid: caeeb704420c5814fb1792945ded87ea, type: 3}
   defaultPropConfig: {fileID: 11400000, guid: 07dd3f62ce4392943be4a16f104c92f6, type: 2}
   statusText: {fileID: 469314931}

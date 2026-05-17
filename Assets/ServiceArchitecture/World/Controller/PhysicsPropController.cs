@@ -1,5 +1,9 @@
+using ServiceArchitecture.Core;
+using ServiceArchitecture.Simulation;
+using ServiceArchitecture.Simulation.Events;
 using ServiceArchitecture.World.Data;
 using ServiceArchitecture.World.View;
+using ServiceArchitecture.World.Events;
 using UnityEngine;
 
 namespace ServiceArchitecture.World.Controller
@@ -8,6 +12,7 @@ namespace ServiceArchitecture.World.Controller
     {
         private readonly PhysicsPropView _view;
         private bool _isHeld;
+        private bool _isHeated;
         private Transform _hand;
 
         public PhysicsPropController(PhysicsPropConfig config, PhysicsPropView view)
@@ -15,6 +20,8 @@ namespace ServiceArchitecture.World.Controller
             _view = view;
             _view.Rb.mass = config.mass;
             _view.Rb.linearDamping = config.drag;
+            
+            EventBus<WorkstationCollisionEvent>.Subscribe(OnWorkstationCollision);
         }
 
         public void OnInteract(Transform interactor)
@@ -32,5 +39,27 @@ namespace ServiceArchitecture.World.Controller
                 _view.transform.SetParent(null);
             }
         }
+        
+         
+        private void OnWorkstationCollision(WorkstationCollisionEvent payload)
+        {
+            // Ignore the event if it wasn't this object that collided or if it's already heated
+            if (payload.CollidingObject != _view.gameObject || _isHeated) return;
+ 
+            // Safety Gate: Check the SOP state from the service.
+            var sopService = GameService.Get<SOP_Service>();
+            if (sopService.CurrentState == ProcedureState.ReadyToWork)
+            {
+                _isHeated = true;
+                _view.GetComponent<MeshRenderer>().material.color = Color.red;
+                EventBus<PropHeatedEvent>.Publish(new PropHeatedEvent());
+                Debug.Log("<color=orange>Prop has been heated!</color>");
+            }
+            else
+            {
+                Debug.LogWarning("Cannot heat prop: PPE not equipped!");
+            }
+        }
+        
     }
 }
