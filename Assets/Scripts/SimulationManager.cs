@@ -6,8 +6,7 @@ public class SimulationManager : MonoBehaviour
 {
     public static SimulationManager instance;
 
-    // By using an enum, we create a formal State Machine.
-    // This makes the simulation flow clearer and prevents invalid states.
+    // Represents the major stages of the simulation procedure.
     public enum ProcedureState
     {
         Preparation, // Waiting for PPE
@@ -24,7 +23,6 @@ public class SimulationManager : MonoBehaviour
     public bool isPowerOn = false;
     public bool isFullSpeed = false;
 
-    // The current state of our procedure state machine.
     public ProcedureState CurrentState { get; private set; }
 
     [Header("Scoring")]
@@ -39,7 +37,7 @@ public class SimulationManager : MonoBehaviour
     
     [Header("UI Refaeance")]
     public TextMeshProUGUI hudText;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Awake()
     {
         if (instance == null) instance = this;
@@ -48,7 +46,6 @@ public class SimulationManager : MonoBehaviour
         CurrentState = ProcedureState.Preparation;
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateHUD();
@@ -68,7 +65,6 @@ public class SimulationManager : MonoBehaviour
             UpdateScore(10, "Equipped Goggles");
             _gogglesScored = true;
 
-            // If both PPE items are equipped, advance the simulation state.
             if (hasGoggles && hasGloves)
             {
                 CurrentState = ProcedureState.Inspection;
@@ -84,7 +80,6 @@ public class SimulationManager : MonoBehaviour
             UpdateScore(10, "Equipped Gloves");
             _glovesScored = true;
 
-            // If both PPE items are equipped, advance the simulation state.
             if (hasGoggles && hasGloves)
             {
                 CurrentState = ProcedureState.Inspection;
@@ -94,19 +89,17 @@ public class SimulationManager : MonoBehaviour
     
     public void ScoreInspection()
     {
-        // Safety Gate: Can only inspect after preparing (wearing PPE).
         if (CurrentState == ProcedureState.Inspection && !_inspectionScored)
         {
             isinspected = true;
             UpdateScore(20, "Machine Inspected");
             _inspectionScored = true;
-            CurrentState = ProcedureState.Operation; // Advance state after inspection.
+            CurrentState = ProcedureState.Operation;
         }
     }
     
     public void ScorePowerOn()
     {
-        // Safety Gate: Can only power on during the Operation phase.
         if (CurrentState == ProcedureState.Operation && isinspected && !_powerOnScored)
         {
             UpdateScore(20, "Grinder Powered On");
@@ -116,7 +109,6 @@ public class SimulationManager : MonoBehaviour
     
     public void ScoreHeat()
     {
-        // Safety Gate: Can only heat during the Operation phase.
         if (CurrentState == ProcedureState.Operation && !_heatScored)
         {
             UpdateScore(20, "Workpiece Heated Correctly");
@@ -126,20 +118,18 @@ public class SimulationManager : MonoBehaviour
     
     public void ScoreCool()
     {
-        // Safety Gate: Can only cool during the Operation phase.
         if (CurrentState == ProcedureState.Operation && !_coolScored)
         {
             UpdateScore(20, "Workpiece Cooled");
             _coolScored = true;
-            CurrentState = ProcedureState.Finished; // Final state transition.
+            CurrentState = ProcedureState.Finished;
         }
     }
 
     void UpdateHUD()
     {
         if (hudText == null) return;
-        
-        // The HUD can now derive its status text from the single CurrentState variable.
+
         string ppeStatus = CurrentState >= ProcedureState.Inspection ? "<color=green>EQUIPPED</color>" : $"<color=red>MISSING</color>";
         string inspectStatus = CurrentState >= ProcedureState.Operation ? "<color=green>DONE</color>" : "<color=yellow>Pending</color>";
         

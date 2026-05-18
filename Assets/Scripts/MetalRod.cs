@@ -17,22 +17,16 @@ public class MetalRod : MonoBehaviour, IIntractable, IHovarabel
     private Rigidbody _rb;
     private bool _isHovering = false;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Cache all necessary components on Start for performance and reliability.
         _rb = GetComponent<Rigidbody>();
         _rodMaterial =GetComponent<Renderer>().material;
         _organicColor = _rodMaterial.color;
         
-        // IMPORTANT: Ensure the material is configured to use emission.
-        // This line enables the "_EMISSION" keyword on the material's shader,
-        // allowing the _EmissionColor property to have a visible effect.
         _rodMaterial.EnableKeyword("_EMISSION");
         
         if(sparkParticles != null) sparkParticles.Stop();
 
-        // Set the initial visual state.
         UpdateVisuals();
     }
 
@@ -68,7 +62,6 @@ public class MetalRod : MonoBehaviour, IIntractable, IHovarabel
 
     void ApplyGrinding()
     {
-        // Instantly heat the rod for clear, immediate feedback.
         if (_currentHeat < 1f)
         {
             _currentHeat = 1f;
@@ -84,28 +77,22 @@ public class MetalRod : MonoBehaviour, IIntractable, IHovarabel
 
     void UpdateVisuals()
     {
-        // The visual state is determined by a clear priority: Hot > Hover > Idle.
         if (_currentHeat >= 1f)
         {
-            // Priority 1: If the rod is hot, it glows red.
             _rodMaterial.SetColor("_EmissionColor", hotColor * _organicColor);
         }
         else if (_isHovering)
         {
-            // Priority 2: If not hot and being hovered, show the hover glow.
             _rodMaterial.SetColor("_EmissionColor", hoverColor * 0.5f);
         }
         else
         {
-            // Priority 3: Otherwise, return to the default non-glowing state.
             _rodMaterial.SetColor("_EmissionColor", Color.black);
         }
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
-        // Only cool the rod if it's actually hot.
         if (collision.gameObject.CompareTag("WaterBucket") && _currentHeat >= 1f)
         {
             _currentHeat = 0f;
@@ -119,15 +106,13 @@ public class MetalRod : MonoBehaviour, IIntractable, IHovarabel
 
     public void OnGrab(Transform interactor)
     {
-        // Implements IIntractable: Logic for being picked up.
         _rb.isKinematic = true;
         transform.SetParent(interactor);
-        transform.localPosition = new Vector3(0, 0, 1.5f); // A default hold position.
+        transform.localPosition = new Vector3(0, 0, 1.5f);
     }
 
     public void OnRelease(Vector3 releaseVelocity)
     {
-        // Implements IIntractable: Logic for being dropped.
         transform.SetParent(null);
         _rb.isKinematic = false;
         _rb.linearVelocity = releaseVelocity;
@@ -135,14 +120,12 @@ public class MetalRod : MonoBehaviour, IIntractable, IHovarabel
 
     public void OnHoverEnter()
     {
-        // Implements IHovarabel: Set hover state and update visuals.
         _isHovering = true;
         UpdateVisuals();
     }
 
     public void OnHoverExit()
     {
-        // Implements IHovarabel: Clear hover state and update visuals.
         _isHovering = false;
         UpdateVisuals();
     }
