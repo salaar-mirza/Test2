@@ -9,9 +9,12 @@ public class GrinderWheel : MonoBehaviour,IIntractable,IHovarabel
     public float acceleration = 400f;
     private float currentRPM = 0f;
 
-    [Header("Materials")] 
+    [Header("Visuals")]
+    public Color hoverColor = Color.yellow;
+    public Color powerOnColor = Color.red;
     private Material _mat;
     private Color _organicColor;
+    private bool _isHovering = false;
 
     private void Awake()
     {
@@ -35,6 +38,24 @@ public class GrinderWheel : MonoBehaviour,IIntractable,IHovarabel
         
         transform.Rotate(Vector3.forward,currentRPM*Time.deltaTime);
 
+        // Handle state-based visuals every frame for reliability.
+        // This ensures the color always reflects the most important state.
+        if (SimulationManager.instance.isPowerOn)
+        {
+            // Priority 1: If power is on, it's always the "danger" color, overriding any hover effect.
+            _mat.color = powerOnColor;
+        }
+        else if (_isHovering)
+        {
+            // Priority 2: If power is off and we are hovering, show the hover color.
+            _mat.color = hoverColor;
+        }
+        else
+        {
+            // Priority 3: Otherwise, it's off and not hovered, so use its original color.
+            _mat.color = _organicColor;
+        }
+
         SimulationManager.instance.isFullSpeed = (currentRPM >= maxRPM * .9f);
     }
 
@@ -56,12 +77,12 @@ public class GrinderWheel : MonoBehaviour,IIntractable,IHovarabel
 
     public void OnHoverEnter()
     {
-        _mat.color = _organicColor;
+        _isHovering = true;
     }
 
     public void OnHoverExit()
     {
-        _mat.color = _organicColor;
+        _isHovering = false;
     }
 
     public void OnRelease(Vector3 releaseVelocity)
