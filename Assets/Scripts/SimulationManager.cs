@@ -5,7 +5,17 @@ using UnityEngine.UI;
 public class SimulationManager : MonoBehaviour
 {
     public static SimulationManager instance;
-    
+
+    // By using an enum, we create a formal State Machine.
+    // This makes the simulation flow clearer and prevents invalid states.
+    public enum ProcedureState
+    {
+        Preparation, // Waiting for PPE
+        Inspection,  // Waiting for machine inspection
+        Operation,   // Ready to power on, grind, and cool
+        Finished     // Task is complete
+    }
+
     [Header("Saftey States")]
     
     public bool hasGoggles = false;
@@ -13,7 +23,10 @@ public class SimulationManager : MonoBehaviour
     public bool isinspected = false;
     public bool isPowerOn = false;
     public bool isFullSpeed = false;
-        
+
+    // The current state of our procedure state machine.
+    public ProcedureState CurrentState { get; private set; }
+
     [Header("Scoring")]
     
     public int totalScore = 0;
@@ -30,7 +43,9 @@ public class SimulationManager : MonoBehaviour
     void Awake()
     {
         if (instance == null) instance = this;
-        else Destroy(gameObject); 
+        else Destroy(gameObject);
+
+        CurrentState = ProcedureState.Preparation;
     }
 
     // Update is called once per frame
@@ -52,6 +67,12 @@ public class SimulationManager : MonoBehaviour
             hasGoggles = true;
             UpdateScore(10, "Equipped Goggles");
             _gogglesScored = true;
+
+            // If both PPE items are equipped, advance the simulation state.
+            if (hasGoggles && hasGloves)
+            {
+                CurrentState = ProcedureState.Inspection;
+            }
         }
     }
     
@@ -62,22 +83,31 @@ public class SimulationManager : MonoBehaviour
             hasGloves = true;
             UpdateScore(10, "Equipped Gloves");
             _glovesScored = true;
+
+            // If both PPE items are equipped, advance the simulation state.
+            if (hasGoggles && hasGloves)
+            {
+                CurrentState = ProcedureState.Inspection;
+            }
         }
     }
     
     public void ScoreInspection()
     {
-        if (!_inspectionScored)
+        // Safety Gate: Can only inspect after preparing (wearing PPE).
+        if (CurrentState == ProcedureState.Inspection && !_inspectionScored)
         {
             isinspected = true;
             UpdateScore(20, "Machine Inspected");
             _inspectionScored = true;
+            CurrentState = ProcedureState.Operation; // Advance state after inspection.
         }
     }
     
     public void ScorePowerOn()
     {
-        if (isinspected && !_powerOnScored)
+        // Safety Gate: Can only power on during the Operation phase.
+        if (CurrentState == ProcedureState.Operation && isinspected && !_powerOnScored)
         {
             UpdateScore(20, "Grinder Powered On");
             _powerOnScored = true;
@@ -86,7 +116,8 @@ public class SimulationManager : MonoBehaviour
     
     public void ScoreHeat()
     {
-        if (!_heatScored)
+        // Safety Gate: Can only heat during the Operation phase.
+        if (CurrentState == ProcedureState.Operation && !_heatScored)
         {
             UpdateScore(20, "Workpiece Heated Correctly");
             _heatScored = true;
@@ -95,21 +126,23 @@ public class SimulationManager : MonoBehaviour
     
     public void ScoreCool()
     {
-        if (!_coolScored)
+        // Safety Gate: Can only cool during the Operation phase.
+        if (CurrentState == ProcedureState.Operation && !_coolScored)
         {
             UpdateScore(20, "Workpiece Cooled");
             _coolScored = true;
+            CurrentState = ProcedureState.Finished; // Final state transition.
         }
     }
 
     void UpdateHUD()
     {
         if (hudText == null) return;
-
-        string ppeStatus = (hasGoggles && hasGloves)
-            ? "<color=green>EQUIPPED</color>"
-            : $"<color=red>MISSING</color>";
-        string inspectStatus = isinspected ? "<color=green>DONE</color>" : "<color=yellow>Pending</color>";
+        
+        // The HUD can now derive its status text from the single CurrentState variable.
+        string ppeStatus = CurrentState >= ProcedureState.Inspection ? "<color=green>EQUIPPED</color>" : $"<color=red>MISSING</color>";
+        string inspectStatus = CurrentState >= ProcedureState.Operation ? "<color=green>DONE</color>" : "<color=yellow>Pending</color>";
+        
         string engineStatus = isPowerOn
             ? (isFullSpeed ? "<color=green>READY</color>" : "<color=yellow>WARMING UP</color>")
             : "<color=white>OFF</color>";

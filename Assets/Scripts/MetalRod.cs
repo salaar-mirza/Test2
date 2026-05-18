@@ -25,6 +25,11 @@ public class MetalRod : MonoBehaviour, IIntractable, IHovarabel
         _rodMaterial =GetComponent<Renderer>().material;
         _organicColor = _rodMaterial.color;
         
+        // IMPORTANT: Ensure the material is configured to use emission.
+        // This line enables the "_EMISSION" keyword on the material's shader,
+        // allowing the _EmissionColor property to have a visible effect.
+        _rodMaterial.EnableKeyword("_EMISSION");
+        
         if(sparkParticles != null) sparkParticles.Stop();
 
         // Set the initial visual state.
