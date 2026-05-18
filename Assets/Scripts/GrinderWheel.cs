@@ -11,7 +11,7 @@ public class GrinderWheel : MonoBehaviour,IIntractable,IHovarabel
 
     [Header("Visuals")]
     public Color hoverColor = Color.yellow;
-    public Color powerOnColor = Color.red;
+    public Color powerOnColor = Color.green;
     private Material _mat;
     private Color _organicColor;
     private bool _isHovering = false;
