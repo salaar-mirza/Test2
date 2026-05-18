@@ -64,4 +64,16 @@ public class PlayerMovement : MonoBehaviour
         _verticalVelocity.y += gravity * Time.deltaTime;
         _characterController.Move(_verticalVelocity * Time.deltaTime);
     }
+    
+     
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 30;
+        style.normal.textColor = Color.red;
+        
+        GUI.Label(new Rect(Screen.width / 2f - 10f, Screen.height /2f - 15f,20,20), "+",style);
+    }
+
 }
+

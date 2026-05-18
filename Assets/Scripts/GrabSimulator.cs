@@ -24,7 +24,7 @@ public class GrabSimulator : MonoBehaviour
            IHovarabel hoverable = hoverHit.collider.GetComponentInParent<IHovarabel>();
            if (hoverable != null)
            {
-               // Case 1: We are looking at a new hoverable object.
+               // Case 1: We are looking at a new hoverable object.w
                if (_currentHovered != hoverable)
                {
                    // If we were previously hovering over a different object, tell it to exit first.
